@@ -1,0 +1,4 @@
+#Fri Apr 08 11:30:07 BRT 2022
+base.0=C\:\\Users\\DELL\\Desktop\\my_programs\\apps_flutter_git\\app_cara_ou_coroa_flutter\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
