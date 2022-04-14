@@ -13,7 +13,6 @@ class _InicioState extends State<Inicio> {
 
     Api api = Api();
     api.pesquisar("");
-    print("resultado");
 
     return Container(
       child: Center(
