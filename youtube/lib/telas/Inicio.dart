@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:youtube/api.dart';
 import 'package:youtube/model/Video.dart';
+import 'package:youtube/video_screen.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Inicio extends StatefulWidget {
 
@@ -44,7 +46,16 @@ class _InicioState extends State<Inicio> {
                       List<Video>? videos = snapshot.data;
                       Video video =videos![index];
 
-                      return Column(
+                      return GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => VideoScreen(id: video.id),
+                          )
+                        );
+                      },
+                      child: Column(
                         children: <Widget>[
                           Container(
                             height: 200,
@@ -58,8 +69,9 @@ class _InicioState extends State<Inicio> {
                           ListTile(
                             title: Text(video.titulo.toString()),
                             subtitle: Text(video.descricao.toString()),
-                      )
+                          )
                         ],
+                      )
                       );
                     },
                     separatorBuilder: (contex, index)=> Divider(
