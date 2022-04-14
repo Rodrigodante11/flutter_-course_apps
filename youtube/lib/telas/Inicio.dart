@@ -24,9 +24,42 @@ class _InicioState extends State<Inicio> {
   }
 
   @override
+  void initState() {
+    // usado para fazer conf iniciais antes de carregar interface
+    super.initState();
+    print("chamando 1 - initState");
+
+  }
+
+  @override
+  void didChangeDependencies(){
+    // utiliza quando para quando precisa construir a interface vc possui
+    // dependencias
+    super.didChangeDependencies();
+    print("chamando 2 - didChangeDependencies");
+  }
+
+  @override
+  void didUpdateWidget(Inicio oldWidget){
+    super.didUpdateWidget(oldWidget);
+    print("chamando 2 - didUpdateWidget");
+  }
+
+  @override
+  void dispose(){
+    // quando nao for usar mais uma tela usase o dispose paga para o que
+    // nao esta usando para nao consumir dados e memoria como a interface
+    // inicio, ela nao eh usado quando esta clicando em " em alta" ae poderia
+    // parar a interface do inicio economizando muitos dados
+
+    super.dispose();
+    print("chamando 4 - dispose");
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-
+    //  faz a construcao da interface
+    print("chamando 3 - build");
     return FutureBuilder<List<Video>>(
       future: _listarVideos(widget.pesquisa),
         builder: (contex, snapshot){
