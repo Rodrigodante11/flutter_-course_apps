@@ -25,10 +25,7 @@ class CustomSearchDelegate extends SearchDelegate<String>{
     return
       IconButton(
           onPressed: (){
-            close(
-                context,
-                "",
-            );
+            close(context,"",);
           },
           icon: Icon(Icons.arrow_back)
       );
@@ -44,7 +41,31 @@ class CustomSearchDelegate extends SearchDelegate<String>{
   @override
   Widget buildSuggestions(BuildContext context) { // chamado toda vez que o usuario digita algo
     //print("pesquisa realizada " +query);
-    return Container();
+    List<String> lista = [];
+    if( query.isNotEmpty){
+      lista = [
+        "Jawsh 685", "Music Mix 2022 Remixes", "Techno Hands up", "Music Mix 2022 | Best"
+      ].where(
+        (texto)=> texto.toLowerCase().startsWith(query.toLowerCase())
+      ).toList();
+
+      return ListView.builder(
+        itemCount: lista.length,
+        itemBuilder: (context,index){
+          return ListTile(
+            onTap: (){
+              close(context, lista[index]);
+            },
+            title: Text(lista[index]),
+          );
+        },
+      );
+    }else{
+      return Center(
+        child: Text("Nenhum resultado para a pesquisa!"),
+      );
+    }
+
   }
   
 }

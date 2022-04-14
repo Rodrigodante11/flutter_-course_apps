@@ -13,12 +13,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   int _indiceAtual = 0;
+  String _resultado = "";
 
   @override
   Widget build(BuildContext context) {
 
     List<Widget> telas = [
-      Inicio(),
+      Inicio(_resultado),
       EmAlta(),
       Inscricao(),
       Biblioteca()
@@ -43,6 +44,9 @@ class _HomeState extends State<Home> {
                   context: context,
                   delegate:CustomSearchDelegate() ,
               );
+              setState(() {
+                _resultado = res!;
+              });
               //print(res);
             },
           ),
