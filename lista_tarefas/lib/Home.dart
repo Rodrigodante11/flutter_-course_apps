@@ -7,8 +7,6 @@ import 'dart:async';
 import 'dart:convert';
 
 
-
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -17,6 +15,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List _listaTarefa = [] ;
+  Map<String, dynamic> _ultimaTarefaRemovida = Map();
   TextEditingController _controller = TextEditingController();
 
   Future<File>  _getFile() async{
@@ -76,14 +75,41 @@ class _HomeState extends State<Home> {
 
   Widget criarItemLista(context,index){
 
-    final item = _listaTarefa[index]["titulo"] ;
+    final item = DateTime.now().microsecondsSinceEpoch.toString()  ;
+    // deixando o item uma string unica para a key
 
     return Dismissible(
         key: Key(item), // para nao criar igual
         direction: DismissDirection.endToStart,
         onDismissed: (direction){
+
+          _ultimaTarefaRemovida = _listaTarefa[index];
+
           _listaTarefa.removeAt(index);
-          _salvarAquivo();
+          //_salvarAquivo();
+
+          //snackBar
+
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: Duration(seconds: 3),
+                backgroundColor: Colors.green,
+                  content: Text("Tarefa Removida!!"),
+                action: SnackBarAction(
+                  label: "Desfazer",
+                  textColor: Colors.white,
+                  onPressed: (){
+                    setState(() {
+                      _listaTarefa.insert(index, _ultimaTarefaRemovida);
+                    });
+                    _salvarAquivo();
+                  },
+                ),
+              )
+          );
+
+
+
         },
         background: Container(
           color: Colors.red,
