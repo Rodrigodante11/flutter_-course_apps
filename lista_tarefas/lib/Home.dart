@@ -74,6 +74,44 @@ class _HomeState extends State<Home> {
     });
   }
 
+  Widget criarItemLista(context,index){
+
+    final item = _listaTarefa[index]["titulo"] ;
+
+    return Dismissible(
+        key: Key(item), // para nao criar igual
+        direction: DismissDirection.endToStart,
+        onDismissed: (direction){
+          _listaTarefa.removeAt(index);
+          _salvarAquivo();
+        },
+        background: Container(
+          color: Colors.red,
+          padding: EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget> [
+              Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
+        child: CheckboxListTile(
+            title: Text(_listaTarefa[index]["titulo"]),
+            value: _listaTarefa[index]["realizada"],
+            onChanged: (valorAlterado){
+              setState(() {
+                _listaTarefa[index]["realizada"] = valorAlterado;
+              });
+              _salvarAquivo();
+            }
+        ),
+    );
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -127,27 +165,13 @@ class _HomeState extends State<Home> {
           Expanded(
               child: ListView.builder(
                 itemCount: _listaTarefa.length,
-                  itemBuilder: (context, index){
+                  itemBuilder: criarItemLista
 
-                    return CheckboxListTile(
-                        title: Text(_listaTarefa[index]["titulo"]),
-                        value: _listaTarefa[index]["realizada"],
-                        onChanged: (valorAlterado){
-                          setState(() {
-                            _listaTarefa[index]["realizada"] = valorAlterado;
-                          });
-                          _salvarAquivo();
-                        }
-                    );
-                    /*
-                    return ListTile(
-                      title: Text(_listaTarefa[index]["titulo"]),
-                    );*/
-                  }
               )
           )
         ],
       ),
     );
   }
+
 }
