@@ -17,6 +17,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List _listaTarefa = [] ;
+  TextEditingController _controller = TextEditingController();
 
   Future<File>  _getFile() async{
     var diretorio = await getApplicationDocumentsDirectory(); // pegando o caminho
@@ -27,15 +28,25 @@ class _HomeState extends State<Home> {
 
     var arquivo = await _getFile();
 
-    //criar os dados
-
-    Map<String, dynamic> tarefa = Map();
-    tarefa['titulo'] = "Ir ao mercado";
-    tarefa['realizada'] = false;
-    _listaTarefa.add(tarefa);
-
     String dados = json.encode(_listaTarefa); // transformando em json
     arquivo.writeAsString(dados);
+
+  }
+  _salvarTarefa() {
+
+    String textoDigitado = _controller.text;
+
+    //criar os dados
+    Map<String, dynamic> tarefa = Map();
+    tarefa['titulo'] = textoDigitado;
+    tarefa['realizada'] = false;
+
+    setState(() {
+      _listaTarefa.add(tarefa);
+    });
+
+    _salvarAquivo();
+    _controller.text = "Digite o titulo" ; // zerando o field
 
   }
 
@@ -85,8 +96,9 @@ class _HomeState extends State<Home> {
                 return AlertDialog(
                   title: Text("Adicionar tarefa"),
                   content: TextField(
+                    controller: _controller,
                     decoration: InputDecoration(
-                      labelText: "Digite sua arefa"
+                      labelText: "Digite sua Tarefa"
                     ),
                     onChanged: (text){
 
@@ -99,6 +111,7 @@ class _HomeState extends State<Home> {
                     ),
                     TextButton(
                         onPressed: (){
+                          _salvarTarefa();
                           Navigator.pop(context);
                         },
                         child: Text("Salvar")
@@ -115,9 +128,21 @@ class _HomeState extends State<Home> {
               child: ListView.builder(
                 itemCount: _listaTarefa.length,
                   itemBuilder: (context, index){
+
+                    return CheckboxListTile(
+                        title: Text(_listaTarefa[index]["titulo"]),
+                        value: _listaTarefa[index]["realizada"],
+                        onChanged: (valorAlterado){
+                          setState(() {
+                            _listaTarefa[index]["realizada"] = valorAlterado;
+                          });
+                          _salvarAquivo();
+                        }
+                    );
+                    /*
                     return ListTile(
                       title: Text(_listaTarefa[index]["titulo"]),
-                    );
+                    );*/
                   }
               )
           )
