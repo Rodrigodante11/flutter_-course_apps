@@ -18,11 +18,14 @@ class _HomeState extends State<Home> {
 
   List _listaTarefa = [] ;
 
+  Future<File>  _getFile() async{
+    var diretorio = await getApplicationDocumentsDirectory(); // pegando o caminho
+    return File( "${diretorio.path}/dados.json" );
+  }
+
   _salvarAquivo() async  {
 
-    var diretorio = await getApplicationDocumentsDirectory(); // pegando o caminho
-    //print("gg " +diretorio.path);
-    var arquivo =  File( "${diretorio.path}/dados.json" );
+    var arquivo = await _getFile();
 
     //criar os dados
 
@@ -36,13 +39,35 @@ class _HomeState extends State<Home> {
 
   }
 
+  _lerarquivo() async {
 
+    try{
+
+      final arquivo = await _getFile();
+      return arquivo.readAsString();
+
+    }catch(e){
+      return null;
+    }
+
+  }
+  @override
+  void initState() { // carrega antes do build
+
+    super.initState();
+
+    _lerarquivo().then( (dados ) {
+      setState(() {
+        _listaTarefa = json.decode(dados); // recuperando os dados no arquivo ao iniciar o app
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    _salvarAquivo();
-
+    //_salvarAquivo();
+    print("itens: " + _listaTarefa.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text("Lista de tarefas"),
@@ -91,7 +116,7 @@ class _HomeState extends State<Home> {
                 itemCount: _listaTarefa.length,
                   itemBuilder: (context, index){
                     return ListTile(
-                      title: Text(_listaTarefa[index]),
+                      title: Text(_listaTarefa[index]["titulo"]),
                     );
                   }
               )
