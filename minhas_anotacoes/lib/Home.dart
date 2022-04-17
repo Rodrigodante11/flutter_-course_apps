@@ -45,7 +45,7 @@ class _HomeState extends State<Home> {
               TextButton(
                   onPressed: () {
 
-                    Navigator.pop(context)
+                    Navigator.pop(context);
                   },
                   child: Text("Salvar")
               )
