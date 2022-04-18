@@ -13,6 +13,8 @@ class _HomeState extends State<Home> {
   TextEditingController _descricaoController = TextEditingController();
   var _db = AnotacaoHelper();
 
+  List<Anotacao> _anotacoes = <Anotacao>[];
+
   _exibirTelaCadastro(){
 
     showDialog(
@@ -41,11 +43,11 @@ class _HomeState extends State<Home> {
               ],
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Text("Cancelar")
               ),
-              FlatButton(
+              TextButton(
                   onPressed: (){
 
                     //salvar
@@ -62,6 +64,25 @@ class _HomeState extends State<Home> {
 
   }
 
+  _recuperarAnotacao() async {
+
+    //_anotacoes.clear();
+    List anotacoesRecuperadas = await _db.recuperarAnotacao();
+    print("Lista anotacoes: " + anotacoesRecuperadas.toString());
+
+    List<Anotacao>? listaTemporaria = <Anotacao>[];
+
+    for( var item in anotacoesRecuperadas){
+        Anotacao anotacao = Anotacao.fromMap(item);
+        listaTemporaria.add(anotacao);
+    }
+
+    setState(() {
+      _anotacoes = listaTemporaria!;
+    });
+    listaTemporaria = null;
+  }
+
   _salvarAnotacao() async {
 
     String titulo = _tituloController.text;
@@ -70,18 +91,53 @@ class _HomeState extends State<Home> {
     //print("data atual: " + DateTime.now().toString() );
     Anotacao anotacao = Anotacao(titulo, descricao, DateTime.now().toString() );
     int resultado = await _db.salvarAnotacao( anotacao );
-    print("salvar anotacao: " + resultado.toString() );
+    //print("salvar anotacao: " + resultado.toString() );
+
+    _tituloController.clear();
+    _descricaoController.clear();
+
+    _recuperarAnotacao();
 
   }
 
   @override
+  void initState(){
+    _recuperarAnotacao();
+    super.initState();
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
+
+    _recuperarAnotacao();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Minhas anotações"),
         backgroundColor: Colors.lightGreen,
       ),
-      body: Container(),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+              child: ListView.builder(
+                  itemCount: _anotacoes.length,
+                  itemBuilder: (context, index){
+
+                    final item = _anotacoes[index];
+
+                    return Card(
+                      child: ListTile(
+                        title: Text( item.titulo.toString() ),
+                        subtitle:Text("${item.data} - ${item.descricao}") ,
+                      ),
+                    );
+                  }
+              )
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.green,
           foregroundColor: Colors.white,
