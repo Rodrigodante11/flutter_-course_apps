@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:minhas_anotacoes/helper/AnotacaoHelper.dart';
+import 'package:minhas_anotacoes/model/Anotacao.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,6 +11,7 @@ class _HomeState extends State<Home> {
 
   TextEditingController _tituloController = TextEditingController();
   TextEditingController _descricaoController = TextEditingController();
+  var _db = AnotacaoHelper();
 
   _exibirTelaCadastro(){
 
@@ -18,7 +21,7 @@ class _HomeState extends State<Home> {
           return AlertDialog(
             title: Text("Adicionar anotação"),
             content: Column(
-              mainAxisSize: MainAxisSize.min, // tamanho do item column utilizado
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 TextField(
                   controller: _tituloController,
@@ -38,12 +41,15 @@ class _HomeState extends State<Home> {
               ],
             ),
             actions: <Widget>[
-              TextButton(
-                  onPressed: ()=> Navigator.pop(context),
+              FlatButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Text("Cancelar")
               ),
-              TextButton(
-                  onPressed: () {
+              FlatButton(
+                  onPressed: (){
+
+                    //salvar
+                    _salvarAnotacao();
 
                     Navigator.pop(context);
                   },
@@ -53,6 +59,18 @@ class _HomeState extends State<Home> {
           );
         }
     );
+
+  }
+
+  _salvarAnotacao() async {
+
+    String titulo = _tituloController.text;
+    String descricao = _descricaoController.text;
+
+    //print("data atual: " + DateTime.now().toString() );
+    Anotacao anotacao = Anotacao(titulo, descricao, DateTime.now().toString() );
+    int resultado = await _db.salvarAnotacao( anotacao );
+    print("salvar anotacao: " + resultado.toString() );
 
   }
 
