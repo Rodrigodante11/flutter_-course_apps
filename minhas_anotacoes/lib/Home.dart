@@ -138,6 +138,16 @@ class _HomeState extends State<Home> {
 
   }
 
+  _removerAnotacao( int?  id) async {
+    int quantidadeRemovida = await _db.removerAnotacao(id!);
+
+    if(quantidadeRemovida >0){
+      // remover algum
+      _recuperarAnotacao();
+    }
+
+  }
+
   @override
   void initState(){
     _recuperarAnotacao();
@@ -186,7 +196,29 @@ class _HomeState extends State<Home> {
                             ),
                             GestureDetector(
                               onTap: (){
+                                showDialog(
+                                    context: context,
+                                    builder: (context){
+                                      return AlertDialog(
+                                        title: Text("Deseja mesmo Excluir a anotacao?"),
+                                        actions: <Widget>[
+                                          TextButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: Text("Cancelar")
+                                          ),
+                                          TextButton(
+                                              onPressed: (){
 
+                                                //Excluir
+                                                _removerAnotacao( item.id);
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("Excluir")
+                                          )
+                                        ],
+                                      );
+                                    }
+                                );
                               },
                               child: Padding(
                                 padding: EdgeInsets.only(right: 20),
